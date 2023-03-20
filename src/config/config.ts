@@ -1,0 +1,20 @@
+import dotenv from 'dotenv'
+dotenv.config()
+
+export default {
+    'development': {
+        debug: (process.env.DEBUG || 1),
+        stage: 'development',
+        port: process.env.PORT || 3000,
+    },
+    'production': {
+        debug: (process.env.DEBUG || 0),
+        stage: 'production',
+        port: process.env.PORT || 3000,
+    },
+    'test': {
+        debug: (process.env.DEBUG || 0),
+        stage: 'test',
+        port: process.env.PORT || 3000,
+    }
+}
