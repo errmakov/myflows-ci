@@ -1,0 +1,10 @@
+{
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "react-hooks/exhaustive-deps": "warn",
+    "indent": [
+      "error",
+      4
+    ]
+  }
+}

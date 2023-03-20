@@ -1,0 +1,16 @@
+{
+  "name": "myflows-ci",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "eslint": "^8.36.0",
+    "typescript": "^5.0.2"
+  }
+}

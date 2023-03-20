@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "declaration": false,
+    "module": "ES6",
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "nodenext",
+    "outDir": "./dist/",
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "es6"
+  },
+  "include": [
+    "./src/"
+  ]
+}
