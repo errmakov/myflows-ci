@@ -39,6 +39,7 @@ app.use(verifySignatureMiddleware);
 
 // Route handler for GET requests
 app.post('/githubhook/push', (req, res) => {
+    console.log('Push event received: ', req.body);
     res.send('Push ok');
 });
 
