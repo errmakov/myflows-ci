@@ -38,7 +38,7 @@ app.use(express.json());
 app.use(verifySignatureMiddleware);
 
 // Route handler for GET requests
-app.get('/githubhook/push', (req, res) => {
+app.post('/githubhook/push', (req, res) => {
     res.send('Push ok');
 });
 
