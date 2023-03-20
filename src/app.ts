@@ -38,8 +38,8 @@ app.use(express.json());
 app.use(verifySignatureMiddleware);
 
 // Route handler for GET requests
-app.get('/', (req, res) => {
-    res.send('Hello, HTTP world!');
+app.get('/githubhook/push', (req, res) => {
+    res.send('Push ok');
 });
 
 // Start the server
