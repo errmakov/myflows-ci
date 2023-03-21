@@ -1,3 +1,4 @@
+import { execSync } from 'child_process';
 import crypto from 'crypto';
 import express, { NextFunction, Request, Response } from 'express';
 import config from './config/config.js';
@@ -39,8 +40,28 @@ app.use(verifySignatureMiddleware);
 
 // Route handler for GET requests
 app.post('/githubhook/push', (req, res) => {
-    console.log('Push event received: ', req.body);
-    res.send('Push ok');
+    try {
+        console.log('Push event received: ', req.body);
+        execSync('git pull');
+        execSync('npm run build');
+        execSync('cy:run:login');
+
+        // axios.post(`https://api.telegram.org/bot'${process.env.TG_API_KEY}'/sendMessage`, {
+        //     chat_id: process.env.TG_CHAT_ID,
+        //     text: 'Deployment successful!',
+        // });
+        res.send('Deployment successful!');
+    } catch (e) {
+        console.log('Error: ', e);
+        execSync('git reset --hard HEAD@{1}');
+
+        // axios.post(`https://api.telegram.org/bot'${process.env.TG_API_KEY}'/sendMessage`, {
+        //     chat_id: process.env.TG_CHAT_ID,
+        //     text: 'Deployment failed!',
+        // });
+        res.status(500).send('Deployment failed!');
+
+    }
 });
 
 // Start the server
