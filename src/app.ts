@@ -47,7 +47,7 @@ app.use(verifySignatureMiddleware);
 app.post('/githubhook/push', (req, res) => {
     try {
         res.status(200).send('Deployment started!');
-        console.log('Push event received: ', req.body);
+        console.log(`Push event received at ${new Date().toISOString()}`);
         execSync(`cd ${process.env.DEPLOY_DIR} && git pull`);
         execSync(`cd ${process.env.DEPLOY_DIR} && npm run build`);
         execSync(`cd ${process.env.DEPLOY_DIR} && npm run cy:run:login`);
@@ -56,16 +56,15 @@ app.post('/githubhook/push', (req, res) => {
         //     chat_id: process.env.TG_CHAT_ID,
         //     text: 'Deployment successful!',
         // });
-        res.send('Deployment successful!');
+
     } catch (e) {
-        console.log('Error: ', e);
+        console.log(`Deployment failed at ${new Date().toISOString()} \n with error: ${e}`);
         execSync('git reset --hard HEAD@{1}');
 
         // axios.post(`https://api.telegram.org/bot'${process.env.TG_API_KEY}'/sendMessage`, {
         //     chat_id: process.env.TG_CHAT_ID,
         //     text: 'Deployment failed!',
         // });
-        res.status(500).send('Deployment failed!');
 
     }
 });
