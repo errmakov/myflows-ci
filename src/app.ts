@@ -12,22 +12,28 @@ const verifySignatureMiddleware = (req: Request, res: Response, next: NextFuncti
     const payloadBody = JSON.stringify(req.body);
     const signatureHeader = req.headers['x-hub-signature-256'];
     if (!signatureHeader) {
+        console.log('Missing signature header')
         return res.status(400).send('Missing signature header');
     }
     const signature = 'sha256=' + crypto.createHmac('sha256', cfg.secret!).update(payloadBody).digest('hex');
     if (Array.isArray(signatureHeader)) {
+        console.log('Array.isArray(signatureHeader)');
         const validSignature = signatureHeader.find((header) =>
             crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(header))
         );
         if (!validSignature) {
+            console.log('Signatures didn\'t match!')
             return res.status(500).send("Signatures didn't match!");
         }
     } else {
+        console.log('!Array.isArray(signatureHeader)')
         if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(signatureHeader))) {
+            console.log('Signatures didn\'t match! 2222')
             return res.status(500).send("Signatures didn't match!");
         }
     }
     req.body = JSON.parse(payloadBody);
+    console.log('Signatures matched!')
     next();
 };
 
@@ -38,7 +44,6 @@ app.use(express.json());
 // Apply middleware to all routes
 app.use(verifySignatureMiddleware);
 
-// Route handler for GET requests
 app.post('/githubhook/push', (req, res) => {
     try {
         console.log('Push event received: ', req.body);
@@ -66,5 +71,5 @@ app.post('/githubhook/push', (req, res) => {
 
 // Start the server
 app.listen(cfg.port, () => {
-    console.log('Listening on port:', cfg.port);
+    console.log('Deploy service listening on port:', cfg.port);
 });
