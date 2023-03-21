@@ -46,6 +46,7 @@ app.use(verifySignatureMiddleware);
 
 app.post('/githubhook/push', (req, res) => {
     try {
+        res.status(200).send('Deployment started!');
         console.log('Push event received: ', req.body);
         execSync(`cd ${process.env.DEPLOY_DIR} && git pull`);
         execSync(`cd ${process.env.DEPLOY_DIR} && npm run build`);
