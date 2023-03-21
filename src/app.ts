@@ -50,7 +50,7 @@ app.post('/githubhook/push', (req, res) => {
         console.log('Push event received: ', req.body);
         execSync(`cd ${process.env.DEPLOY_DIR} && git pull`);
         execSync(`cd ${process.env.DEPLOY_DIR} && npm run build`);
-        execSync(`cd ${process.env.DEPLOY_DIR} && cy:run:login`);
+        execSync(`cd ${process.env.DEPLOY_DIR} && npm run cy:run:login`);
 
         // axios.post(`https://api.telegram.org/bot'${process.env.TG_API_KEY}'/sendMessage`, {
         //     chat_id: process.env.TG_CHAT_ID,
