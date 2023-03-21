@@ -47,9 +47,9 @@ app.use(verifySignatureMiddleware);
 app.post('/githubhook/push', (req, res) => {
     try {
         console.log('Push event received: ', req.body);
-        execSync('git pull');
-        execSync('npm run build');
-        execSync('cy:run:login');
+        execSync(`cd ${process.env.DEPLOY_DIR} && git pull`);
+        execSync(`cd ${process.env.DEPLOY_DIR} && npm run build`);
+        execSync(`cd ${process.env.DEPLOY_DIR} && cy:run:login`);
 
         // axios.post(`https://api.telegram.org/bot'${process.env.TG_API_KEY}'/sendMessage`, {
         //     chat_id: process.env.TG_CHAT_ID,
