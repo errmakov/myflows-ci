@@ -71,5 +71,5 @@ app.post('/githubhook/push', (req, res) => {
 
 // Start the server
 app.listen(cfg.port, () => {
-    console.log('Deploy service listening on port:', cfg.port);
+    console.log(`Deploy service started listening at ${new Date().toISOString()} on port ${cfg.port}`);
 });
