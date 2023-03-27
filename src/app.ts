@@ -47,9 +47,9 @@ app.use(express.json());
 app.use(verifySignatureMiddleware);
 
 const tgpost = (text: string) => {
-    axios.post(`https://api.telegram.org/bot'${process.env.TG_BOT_TOKEN}'/sendMessage`, {
+    axios.post(`https://api.telegram.org/bot${process.env.TG_BOT_TOKEN}/sendMessage`, {
                 chat_id: process.env.TG_CHAT_ID,
-                text: `Deployment started!`,
+                text: text
             });   
 }
 
