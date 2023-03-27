@@ -64,8 +64,8 @@ app.post('/githubhook/push', async (req, res) => {
             await tgpost(`run \`npm run build\``);
             execSync(`cd ${process.env.DEPLOY_DIR} && npm run build`);
             
-            await tgpost(`run cypress e2e: \`npm run cy:run\``);
-            execSync(`cd ${process.env.DEPLOY_DIR} && npm run cy:run`);
+            await tgpost(`run cypress e2e: \`npm run test:cy:ci\``);
+            execSync(`cd ${process.env.DEPLOY_DIR} && npm run test:cy:ci`);
             
             
             execSync(`cd ${process.env.DEPLOY_DIR} && echo '${req.body.head_commit.url}///${req.body.head_commit.id}///${req.body.head_commit.timestamp}///${req.body.pusher.name}'> public/version.txt`);
