@@ -5,8 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "node dist/app.js",
-    "dev": "tsc &&  DEBUG=express:* node dist/app.js",
-    "build": "tsc",
+    "dev": "npm i && tsc &&  DEBUG=express:* node dist/app.js",
+    "build": "npm i && tsc",
     "test": "test"
   },
   "author": "",
