@@ -47,40 +47,40 @@ app.use(express.json());
 app.use(verifySignatureMiddleware);
 
 const tgpost = (text: string) => {
-    axios.post(`https://api.telegram.org/bot${process.env.TG_BOT_TOKEN}/sendMessage`, {
+    return axios.post(`https://api.telegram.org/bot${process.env.TG_BOT_TOKEN}/sendMessage`, {
                 chat_id: process.env.TG_CHAT_ID,
                 text: text
             });   
 }
 
-app.post('/githubhook/push', (req, res) => {
+app.post('/githubhook/push', async (req, res) => {
     try {
         if (req.body.ref.includes('stage')) {
             res.status(200).send('Deployment started!');
-            tgpost(`Deployment started: ${req.body.head_commit.id} by ${req.body.pusher.name}`);            
+            await tgpost(`Deployment started: ${req.body.head_commit.id} by ${req.body.pusher.name}`);            
             console.log(`Push event received at ${new Date().toISOString()}`);
-            tgpost('run git checkout!');
+            await tgpost('run git checkout!');
             execSync(`cd ${process.env.DEPLOY_DIR} && git checkout ${process.env.TARGET_BRANCH} && git pull`);
-            tgpost('run npm run build!');
+            await tgpost('run npm run build!');
             execSync(`cd ${process.env.DEPLOY_DIR} && npm run build`);
             
-            tgpost('run cypress e2n: npm run cy:run');
+            await tgpost('run cypress e2n: npm run cy:run');
             execSync(`cd ${process.env.DEPLOY_DIR} && npm run cy:run:login`);
             
             
             execSync(`cd ${process.env.DEPLOY_DIR} && echo '${req.body.head_commit.url}///${req.body.head_commit.id}///${req.body.head_commit.timestamp}///${req.body.pusher.name}'> public/version.txt`);
             
-            tgpost(`Deployment finished: ${req.body.head_commit.id} by ${req.body.pusher.name}`);
+            await tgpost(`Deployment finished: ${req.body.head_commit.id} by ${req.body.pusher.name}`);
             
         } else {
             res.status(200).send(`Branch ${req.body.ref} is not allowed to deploy!`);
-            tgpost(`Branch ${req.body.ref} is not allowed to deploy!`);
+            await tgpost(`Branch ${req.body.ref} is not allowed to deploy!`);
         }
     } catch (e) {
         console.log(`Deployment  ${req.body.head_commit.id} by ${req.body.pusher.name} failed at ${new Date().toISOString()} \n with error: ${e}`);
-        tgpost(`Deployment  ${req.body.head_commit.id} by ${req.body.pusher.name} failed at ${new Date().toISOString()} \n with error: ${e}`);
+        await tgpost(`Deployment  ${req.body.head_commit.id} by ${req.body.pusher.name} failed at ${new Date().toISOString()} \n with error: ${e}`);
         
-        tgpost(`Trying to rollback: git reset --hard HEAD@{1}`);
+        await tgpost(`Trying to rollback: git reset --hard HEAD@{1}`);
         
         execSync('git reset --hard HEAD@{1}');
 
