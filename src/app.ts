@@ -57,20 +57,20 @@ app.post('/githubhook/push', async (req, res) => {
     try {
         if (req.body.ref.includes('stage')) {
             res.status(200).send('Deployment started!');
-            await tgpost(`Deployment started: ${req.body.head_commit.id} by ${req.body.pusher.name}`);            
+            await tgpost(`*Deployment started*:\n[${req.body.head_commit.id}](${req.body.head_commit.url}) by ${req.body.pusher.name}`);            
             console.log(`Push event received at ${new Date().toISOString()}`);
-            await tgpost('run git checkout!');
+            await tgpost(`run \`git checkout\``);
             execSync(`cd ${process.env.DEPLOY_DIR} && git checkout ${process.env.TARGET_BRANCH} && git pull`);
-            await tgpost('run npm run build!');
+            await tgpost(`run \`npm run build\``);
             execSync(`cd ${process.env.DEPLOY_DIR} && npm run build`);
             
-            await tgpost('run cypress e2n: npm run cy:run');
-            execSync(`cd ${process.env.DEPLOY_DIR} && npm run cy:run:login`);
+            await tgpost(`run cypress e2e: \`npm run cy:run\``);
+            execSync(`cd ${process.env.DEPLOY_DIR} && npm run cy:run`);
             
             
             execSync(`cd ${process.env.DEPLOY_DIR} && echo '${req.body.head_commit.url}///${req.body.head_commit.id}///${req.body.head_commit.timestamp}///${req.body.pusher.name}'> public/version.txt`);
             
-            await tgpost(`Deployment finished: ${req.body.head_commit.id} by ${req.body.pusher.name}`);
+            await tgpost(`*Deployment finished!*\n[${req.body.head_commit.id}](${req.body.head_commit.url}) by ${req.body.pusher.name}`);
             
         } else {
             res.status(200).send(`Branch ${req.body.ref} is not allowed to deploy!`);
@@ -78,9 +78,9 @@ app.post('/githubhook/push', async (req, res) => {
         }
     } catch (e) {
         console.log(`Deployment  ${req.body.head_commit.id} by ${req.body.pusher.name} failed at ${new Date().toISOString()} \n with error: ${e}`);
-        await tgpost(`Deployment  ${req.body.head_commit.id} by ${req.body.pusher.name} failed at ${new Date().toISOString()} \n with error: ${e}`);
+        await tgpost(`Deployment  [${req.body.head_commit.id}](${req.body.head_commit.url}) by ${req.body.pusher.name} failed at ${new Date().toISOString()} \n with error: ${e}`);
         
-        await tgpost(`Trying to rollback: git reset --hard HEAD@{1}`);
+        await tgpost(`Trying to rollback: \`git reset --hard HEAD@{1}\``);
         
         execSync('git reset --hard HEAD@{1}');
 
