@@ -52,7 +52,7 @@ app.post('/githubhook/push', (req, res) => {
             execSync(`cd ${process.env.DEPLOY_DIR} && git checkout ${process.env.TARGET_BRANCH} && git pull`);
             execSync(`cd ${process.env.DEPLOY_DIR} && npm run build`);
             execSync(`cd ${process.env.DEPLOY_DIR} && npm run cy:run:login`);
-            execSync(`cd ${process.env.DEPLOY_DIR} && echo '${req.body.head_commit.url}///${req.body.head_commit.id}</a>///${req.body.head_commit.timestamp}///${req.body.pusher.name}'> public/version.txt`);
+            execSync(`cd ${process.env.DEPLOY_DIR} && echo '${req.body.head_commit.url}///${req.body.head_commit.id}///${req.body.head_commit.timestamp}///${req.body.pusher.name}'> public/version.txt`);
             // axios.post(`https://api.telegram.org/bot'${process.env.TG_API_KEY}'/sendMessage`, {
             //     chat_id: process.env.TG_CHAT_ID,
             //     text: 'Deployment successful!',
