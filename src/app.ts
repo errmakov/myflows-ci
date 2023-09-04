@@ -64,6 +64,8 @@ app.post('/githubhook/push', async (req, res) => {
             await tgpost(`run \`npm run build\``);
             execSync(`cd ${process.env.DEPLOY_DIR} && npm run build`);
             
+            await tgpost(`run jest unit tests: \`npm run test:j\``);
+            execSync(`cd ${process.env.DEPLOY_DIR} && npm run test:j`);
             
             await tgpost(`run cypress e2e: \`npm run test:cy:ci\``);
             execSync(`cd ${process.env.DEPLOY_DIR} && npm run test:cy:ci`);
