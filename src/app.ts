@@ -120,7 +120,7 @@ app.post("/githubhook/push", async (req, res) => {
   }
 });
 
-app.post("/githubhook2/push", async (req, res) => {
+app.post("/ci/githubhook2/push", async (req, res) => {
   try {
     if (req.body.ref.includes("stage")) {
       res.status(200).send("Deployment started!");
