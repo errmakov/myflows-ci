@@ -13,6 +13,7 @@ const verifySignatureMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
+  console.log("req: ", req);
   const payloadBody = JSON.stringify(req.body);
   console.log("payloadBody", payloadBody);
   const signatureHeader = req.headers["x-hub-signature-256"];
