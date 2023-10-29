@@ -14,6 +14,7 @@ const verifySignatureMiddleware = (
   next: NextFunction
 ) => {
   const payloadBody = JSON.stringify(req.body);
+  console.log("payloadBody", payloadBody);
   const signatureHeader = req.headers["x-hub-signature-256"];
   if (!signatureHeader) {
     console.log("Missing signature header");
