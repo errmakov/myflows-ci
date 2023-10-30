@@ -123,7 +123,7 @@ app.post("/githubhook/push", async (req, res) => {
 
 app.post("/ci/githubhook2/push", async (req, res) => {
   try {
-    if (!req.body.ref.includes("stage")) {
+    if (req.body.ref.includes("stage")) {
       res.status(200).send("Deployment started!");
       await tgpost(
         `*Deployment started*:\n[${req.body.head_commit.id}](${req.body.head_commit.url}) by ${req.body.pusher.name}`
