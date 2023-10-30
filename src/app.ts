@@ -78,7 +78,7 @@ app.post("/ci/githubhook2/push", async (req, res) => {
     );
 
     const ansible = execSync(
-      `ansible-playbook -i ${process.env.ROOT_DIR}/inventory.ini ${process.env.ROOT_DIR}/stage.pb.yaml`
+      `ROOT_DIR=${process.env.ROOT_DIR} ansible-playbook -i ${process.env.ROOT_DIR}/inventory.ini ${process.env.ROOT_DIR}/stage.pb.yaml`
     );
 
     await tgpost(
