@@ -85,6 +85,7 @@ app.post("/ci/githubhook2/push", async (req, res) => {
       `*Deployment finished!*\n[${req.body.head_commit.id}](${req.body.head_commit.url}) by ${req.body.pusher.name}`
     );
   } catch (e) {
+    console.log("e: ", e);
     await tgpost(
       `Deployment  [${req.body.head_commit.id}](${
         req.body.head_commit.url
