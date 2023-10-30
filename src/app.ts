@@ -123,21 +123,20 @@ app.post("/githubhook/push", async (req, res) => {
 
 app.post("/ci/githubhook2/push", async (req, res) => {
   try {
-    if (req.body.ref.includes("stage")) {
+    if (!req.body.ref.includes("stage")) {
       res.status(200).send("Deployment started!");
       await tgpost(
         `*Deployment started*:\n[${req.body.head_commit.id}](${req.body.head_commit.url}) by ${req.body.pusher.name}`
+      );
+
+      const ansible = execSync(
+        "ansible-playbook -i inventory.ini stage.pb.yaml"
       );
     } else {
       res.status(200).send(`Branch ${req.body.ref} is not allowed to deploy!`);
       await tgpost(`Branch ${req.body.ref} is not allowed to deploy!`);
     }
   } catch (e) {
-    console.log(
-      `Deployment  ${req.body.head_commit.id} by ${
-        req.body.pusher.name
-      } failed at ${new Date().toISOString()} \n with error: ${e}`
-    );
     await tgpost(
       `Deployment  [${req.body.head_commit.id}](${
         req.body.head_commit.url
