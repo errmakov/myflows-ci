@@ -67,75 +67,23 @@ const tgpost = (text: string) => {
   );
 };
 
-app.post("/githubhook/push", async (req, res) => {
-  try {
-    if (req.body.ref.includes("stage")) {
-      res.status(200).send("Deployment started!");
-      await tgpost(
-        `*Deployment started*:\n[${req.body.head_commit.id}](${req.body.head_commit.url}) by ${req.body.pusher.name}`
-      );
-      console.log(`Push event received at ${new Date().toISOString()}`);
-      await tgpost(`run \`git checkout\``);
-      execSync(
-        `cd ${process.env.DEPLOY_DIR} && git checkout ${process.env.TARGET_BRANCH} && git pull`
-      );
-      await tgpost(`run \`npm run build\``);
-      execSync(`cd ${process.env.DEPLOY_DIR} && npm run build`);
-
-      await tgpost(`run jest unit tests: \`npm run test:j\``);
-      execSync(`cd ${process.env.DEPLOY_DIR} && npm run test:j`);
-
-      await tgpost(`run cypress e2e: \`npm run test:cy:ci\``);
-      execSync(`cd ${process.env.DEPLOY_DIR} && npm run test:cy:ci`);
-
-      //await tgpost(`Make CI great again a little bit later (skipping e2e tests right now)`);
-
-      execSync(
-        `cd ${process.env.DEPLOY_DIR} && echo '${req.body.head_commit.url}///${req.body.head_commit.id}///${req.body.head_commit.timestamp}///${req.body.pusher.name}'> public/version.txt`
-      );
-
-      await tgpost(
-        `*Deployment finished!*\n[${req.body.head_commit.id}](${req.body.head_commit.url}) by ${req.body.pusher.name}`
-      );
-    } else {
-      res.status(200).send(`Branch ${req.body.ref} is not allowed to deploy!`);
-      await tgpost(`Branch ${req.body.ref} is not allowed to deploy!`);
-    }
-  } catch (e) {
-    console.log(
-      `Deployment  ${req.body.head_commit.id} by ${
-        req.body.pusher.name
-      } failed at ${new Date().toISOString()} \n with error: ${e}`
-    );
-    await tgpost(
-      `Deployment  [${req.body.head_commit.id}](${
-        req.body.head_commit.url
-      }) by ${
-        req.body.pusher.name
-      } failed at ${new Date().toISOString()} \n with error: ${e}`
-    );
-
-    await tgpost(`Trying to rollback: \`git reset --hard HEAD@{1}\``);
-
-    execSync("git reset --hard HEAD@{1}");
-  }
-});
-
 app.post("/ci/githubhook2/push", async (req, res) => {
   try {
-    if (req.body.ref.includes("stage")) {
-      res.status(200).send("Deployment started!");
-      await tgpost(
-        `*Deployment started*:\n[${req.body.head_commit.id}](${req.body.head_commit.url}) by ${req.body.pusher.name}`
-      );
+    if (!req.body.ref.includes("stage"))
+      throw new Error(`Only ${process.env.TARGET_BRANCH} allowed to deploy`);
 
-      const ansible = execSync(
-        "ansible-playbook -i ../dev2.myflows.ru/inventory.ini ../dev2.myflows.ru/stage.pb.yaml"
-      );
-    } else {
-      res.status(200).send(`Branch ${req.body.ref} is not allowed to deploy!`);
-      await tgpost(`Branch ${req.body.ref} is not allowed to deploy!`);
-    }
+    res.status(200).send("Deployment started!");
+    await tgpost(
+      `*Deployment started*:\n[${req.body.head_commit.id}](${req.body.head_commit.url}) by ${req.body.pusher.name}`
+    );
+
+    const ansible = execSync(
+      `ansible-playbook -i ${process.env.ROOT_DIR}/inventory.ini ${process.env.ROOT_DIR}/stage.pb.yaml`
+    );
+
+    await tgpost(
+      `*Deployment finished!*\n[${req.body.head_commit.id}](${req.body.head_commit.url}) by ${req.body.pusher.name}`
+    );
   } catch (e) {
     await tgpost(
       `Deployment  [${req.body.head_commit.id}](${
