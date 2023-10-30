@@ -130,7 +130,7 @@ app.post("/ci/githubhook2/push", async (req, res) => {
       );
 
       const ansible = execSync(
-        "ansible-playbook -i inventory.ini stage.pb.yaml"
+        "ansible-playbook -i ../dev2.myflows.ru/inventory.ini ../dev2.myflows.ru/stage.pb.yaml"
       );
     } else {
       res.status(200).send(`Branch ${req.body.ref} is not allowed to deploy!`);
