@@ -73,12 +73,6 @@ function extractEntities(markdownText: string) {
   return entities;
 }
 
-// Example usage
-const markdownText =
-  "This is *bold*, _italic_, `code`, and [a link](https://example.com).";
-const result = extractEntities(markdownText);
-console.log(result);
-
 const tgpost = (text: string) => {
   const escapedText = text.replace(/!/g, "\\$&");
   return axios.post(
