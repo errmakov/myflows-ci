@@ -24,8 +24,8 @@ function extractEntities(markdownText: string) {
       code,
       linkText,
       linkUrl,
-      imageUrl,
       imageText,
+      imageUrl,
     ] = match;
 
     if (bold) {
@@ -45,7 +45,14 @@ function extractEntities(markdownText: string) {
         length: linkText.length,
         url: linkUrl,
       });
-    } else if (imageUrl && imageText) {
+    } else if (imageUrl && !imageText) {
+      entities.push({
+        type: "text_link",
+        offset: match.index,
+        length: imageUrl.length,
+        url: imageUrl,
+      });
+    } else if (imageText && imageUrl) {
       entities.push({
         type: "text_link",
         offset: match.index,
