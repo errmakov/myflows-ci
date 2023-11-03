@@ -63,6 +63,7 @@ const tgpost = (text: string) => {
 
 app.get("/ci/githubhook2/push", async (req, res) => {
   try {
+    tgpost(`Hello from *github* _webhook_!`);
   } catch (e) {
     console.log("e: ", e);
     tgpost("e: " + e);
