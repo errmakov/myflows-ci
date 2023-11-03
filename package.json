@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node dist/app.js",
+    "mark": "node dist/markdown.js",
     "dev": "npm i && tsc &&  DEBUG=express:* node dist/app.js",
     "build": "npm i && tsc",
     "test": "test"

@@ -69,25 +69,31 @@ const tgpost = (text: string) => {
 
 app.post("/ci/githubhook2/push", async (req, res) => {
   try {
-    if (!req.body.ref.includes("stage"))
-      throw new Error(`Only ${process.env.TARGET_BRANCH} allowed to deploy`);
-
-    res.status(200).send("Deployment started!");
-    await tgpost(
-      `*Deployment started*:\n[${req.body.head_commit.id}](${req.body.head_commit.url}) by ${req.body.pusher.name}`
+    console.log("req.body:", req.body);
+    console.log("req.body.keys", Object.keys(req.body));
+    console.log("req.body.ref", req.body.ref);
+    console.log(
+      "req.body.ref.includes(stage)",
+      (req.body.ref as string).includes("stage")
     );
+    if ((req.body.ref as string).includes("stage")) {
+      res.status(200).send("Deployment started!");
+      await tgpost(
+        `*Deployment started*:\n[${req.body.head_commit.id}](${req.body.head_commit.url}) by ${req.body.pusher.name}`
+      );
 
-    const ansible = execSync(
-      `ROOT_DIR=${process.env.ROOT_DIR} ansible-playbook -i ${process.env.ROOT_DIR}/inventory.ini ${process.env.ROOT_DIR}/stage.pb.yaml`
-    );
+      const ansible = execSync(
+        `ANSIBLE_LOG_PATH=/tmp/ansible.log ansible-playbook -i ${process.env.ROOT_DIR}/inventory.ini ${process.env.ROOT_DIR}/stage.pb.yaml`
+      );
 
-    await tgpost(
-      `*Deployment finished!*\n[${req.body.head_commit.id}](${req.body.head_commit.url}) by ${req.body.pusher.name}`
-    );
-  } catch (e: any) {
-    console.log("e: ", e);
-    console.log("e.stdout: ", e.stdout.toString());
-    console.log("e.stderr: ", e.stderr.toString());
+      await tgpost(
+        `*Deployment finished*:\n[${req.body.head_commit.id}](${req.body.head_commit.url}) by ${req.body.pusher.name}`
+      );
+    } else {
+      res.status(200).send(`Branch ${req.body.ref} is not allowed to deploy!`);
+      await tgpost(`Branch ${req.body.ref} is not allowed to deploy!`);
+    }
+  } catch (e) {
     await tgpost(
       `Deployment  [${req.body.head_commit.id}](${
         req.body.head_commit.url
