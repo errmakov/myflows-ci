@@ -19,7 +19,7 @@ const tgpost = (text: string) => {
   );
 };
 
-app.post("/ci/githubhook2/push", async (req, res) => {
+app.get("/ci/githubhook2/push", async (req, res) => {
   try {
   } catch (e) {
     console.log("e: ", e);
