@@ -8,6 +8,12 @@ const cfg = config[confKey];
 const app = express();
 
 app.use(express.json());
+
+function escapeExclamationMarks(text: string) {
+  // Escape exclamation marks with a preceding backslash
+  return text.replace(/!/g, "\\$&");
+}
+
 function extractEntities(markdownText: string) {
   const entities = [];
   let match;
@@ -16,7 +22,9 @@ function extractEntities(markdownText: string) {
   const regex =
     /\*([^*]+)\*|_([^_]+)_|\`([^`]+)\`|\[([^\]]+)\]\(([^)]+)\)|(https?:\/\/\S+\.(?:png|jpe?g|gif|svg))|!?\[([^\]]+)\]\(([^)]+)\)/g;
 
-  while ((match = regex.exec(markdownText)) !== null) {
+  const escapedText = escapeExclamationMarks(markdownText);
+
+  while ((match = regex.exec(escapedText)) !== null) {
     const [
       fullMatch,
       bold,
