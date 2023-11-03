@@ -13,11 +13,21 @@ function extractEntities(markdownText: string) {
   const entities = [];
   let match;
 
-  // Regular expression to find Markdown entities
-  const regex = /\*([^*]+)\*|_([^_]+)_|\`([^`]+)\`|\[([^\]]+)\]\(([^)]+)\)/g;
+  // Regular expression to find Markdown entities with escaping for reserved characters
+  const regex =
+    /\*([^*]+)\*|_([^_]+)_|\`([^`]+)\`|\[([^\]]+)\]\(([^)]+)\)|!?\[([^\]]+)\]\(([^)]+)\)/g;
 
   while ((match = regex.exec(markdownText)) !== null) {
-    const [fullMatch, bold, italic, code, linkText, linkUrl] = match;
+    const [
+      fullMatch,
+      bold,
+      italic,
+      code,
+      linkText,
+      linkUrl,
+      imageText,
+      imageUrl,
+    ] = match;
 
     if (bold) {
       entities.push({ type: "bold", offset: match.index, length: bold.length });
@@ -35,6 +45,13 @@ function extractEntities(markdownText: string) {
         offset: match.index,
         length: linkText.length,
         url: linkUrl,
+      });
+    } else if (imageText && imageUrl) {
+      entities.push({
+        type: "text_link",
+        offset: match.index,
+        length: imageText.length,
+        url: imageUrl,
       });
     }
   }
