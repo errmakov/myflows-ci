@@ -8,14 +8,13 @@ const cfg = config[confKey];
 const app = express();
 
 app.use(express.json());
-
 function extractEntities(markdownText: string) {
   const entities = [];
   let match;
 
   // Regular expression to find Markdown entities with escaping for reserved characters
   const regex =
-    /\*([^*]+)\*|_([^_]+)_|\`([^`]+)\`|\[([^\]]+)\]\(([^)]+)\)|!?\[([^\]]+)\]\(([^)]+)\)/g;
+    /\*([^*]+)\*|_([^_]+)_|\`([^`]+)\`|\[([^\]]+)\]\(([^)]+)\)|(https?:\/\/\S+\.(?:png|jpe?g|gif|svg))|!?\[([^\]]+)\]\(([^)]+)\)/g;
 
   while ((match = regex.exec(markdownText)) !== null) {
     const [
@@ -25,8 +24,8 @@ function extractEntities(markdownText: string) {
       code,
       linkText,
       linkUrl,
-      imageText,
       imageUrl,
+      imageText,
     ] = match;
 
     if (bold) {
@@ -46,7 +45,7 @@ function extractEntities(markdownText: string) {
         length: linkText.length,
         url: linkUrl,
       });
-    } else if (imageText && imageUrl) {
+    } else if (imageUrl && imageText) {
       entities.push({
         type: "text_link",
         offset: match.index,
