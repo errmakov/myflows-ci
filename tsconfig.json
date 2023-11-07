@@ -9,10 +9,7 @@
     "sourceMap": true,
     "strict": true,
     "target": "es5",
-    "module": "commonjs"
+    "module": "NodeNext"
   },
-  "include": [
-    "./src/**/*.ts",
-    "./src/**/*.tsx"
-  ]
+  "include": ["./src/**/*.ts", "./src/**/*.tsx"]
 }
