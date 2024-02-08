@@ -92,26 +92,14 @@ app.get("/ci/githubhook3/push", async (req, res) => {
       `✅ Hello 😱 from *github* _webhook_! This is [link](https://google.com)`
     );
     await tgpost(
-      `🚥 *Deployment started* 🚥\n[${
-        req.body.head_commit.id ?? "some-commit"
-      }](${req.body.head_commit.url ?? "http://some-url.com"}) by 👨‍🚀 ${
-        req.body.pusher.name ?? "pushers-name"
-      }`
+      `🚥 *Deployment started* 🚥\n[${"some-commit"}](${"http://some-url.com"}) by 👨‍🚀 ${"pushers-name"}`
     );
     await tgpost(
-      `🏁 *Deployment finished* 🏁 \n[${
-        req.body.head_commit.id ?? "some-string"
-      }](${req.body.head_commit.url ?? "http://some-url.com"}) by 👨‍🚀 ${
-        req.body.pusher.name ?? "some-name"
-      }`
+      `🏁 *Deployment finished* 🏁 \n[${"some-string"}](${"http://some-url.com"}) by 👨‍🚀 ${"some-name"}`
     );
 
     await tgpost(
-      `🛑 Deployment  [${req.body.head_commit.id ?? "commit id-1111"}](${
-        req.body.head_commit.url ?? "http://some-url.com"
-      }) by 🐒 ${
-        req.body.pusher.name ?? "pusher-name"
-      } failed 😱😱😱 at ${new Date().toISOString()} \n with error: some-error!/1233zsdf""`
+      `🛑 Deployment  [${"commit id-1111"}](${"http://some-url.com"}) by 🐒 ${"pusher-name"} failed 😱😱😱 at ${new Date().toISOString()} \n with error: some-error!/1233zsdf""`
     );
     res.send("Deploy succeeded");
   } catch (e) {
