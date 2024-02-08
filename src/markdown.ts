@@ -9,10 +9,9 @@ const app = express();
 
 app.use(express.json());
 
-function escapeExclamationMarks(text: string) {
-  // Escape exclamation marks with a preceding backslash
-  return text.replace(/!/g, "\\$&");
-}
+const escapeMarkdownV2 = (text: string): string => {
+  return text.replace(/[_*[\]()~`>#+\-=|{}.!\\-]/g, "\\$&");
+};
 
 function extractEntities(markdownText: string) {
   const entities = [];
@@ -22,7 +21,7 @@ function extractEntities(markdownText: string) {
   const regex =
     /\*([^*]+)\*|_([^_]+)_|\`([^`]+)\`|\[([^\]]+)\]\(([^)]+)\)|(https?:\/\/\S+\.(?:png|jpe?g|gif|svg))|!?\[([^\]]+)\]\(([^)]+)\)/g;
 
-  const escapedText = escapeExclamationMarks(markdownText);
+  const escapedText = escapeMarkdownV2(markdownText);
 
   while ((match = regex.exec(escapedText)) !== null) {
     const [
@@ -74,7 +73,7 @@ function extractEntities(markdownText: string) {
 }
 
 const tgpost = (text: string) => {
-  const escapedText = text.replace(/!/g, "\\$&");
+  const escapedText = escapeMarkdownV2(text);
   return axios.post(
     `https://api.telegram.org/bot${process.env.TG_BOT_TOKEN}/sendMessage`,
     {
@@ -87,10 +86,32 @@ const tgpost = (text: string) => {
   );
 };
 
-app.get("/ci/githubhook2/push", async (req, res) => {
+app.get("/ci/githubhook3/push", async (req, res) => {
   try {
-    tgpost(
+    await tgpost(
       `✅ Hello 😱 from *github* _webhook_! This is [link](https://google.com)`
+    );
+    await tgpost(
+      `🚥 *Deployment started* 🚥\n[${
+        req.body.head_commit.id ?? "some-commit"
+      }](${req.body.head_commit.url ?? "http://some-url.com"}) by 👨‍🚀 ${
+        req.body.pusher.name ?? "pushers-name"
+      }`
+    );
+    await tgpost(
+      `🏁 *Deployment finished* 🏁 \n[${
+        req.body.head_commit.id ?? "some-string"
+      }](${req.body.head_commit.url ?? "http://some-url.com"}) by 👨‍🚀 ${
+        req.body.pusher.name ?? "some-name"
+      }`
+    );
+
+    await tgpost(
+      `🛑 Deployment  [${req.body.head_commit.id ?? "commit id-1111"}](${
+        req.body.head_commit.url ?? "http://some-url.com"
+      }) by 🐒 ${
+        req.body.pusher.name ?? "pusher-name"
+      } failed 😱😱😱 at ${new Date().toISOString()} \n with error: some-error!/1233zsdf""`
     );
     res.send("Deploy succeeded");
   } catch (e) {
