@@ -12,7 +12,6 @@ app.use(express.json());
 const escapeMarkdownV2 = (text: string): string => {
   return text.replace(/[_*[\]()~`>#+\-=|{}.!\\-]/g, "\\$&");
 };
-
 function extractEntities(markdownText: string) {
   const entities = [];
   let match;
@@ -22,7 +21,6 @@ function extractEntities(markdownText: string) {
     /\*([^*]+)\*|_([^_]+)_|\`([^`]+)\`|\[([^\]]+)\]\(([^)]+)\)|(https?:\/\/\S+\.(?:png|jpe?g|gif|svg))|!?\[([^\]]+)\]\(([^)]+)\)/g;
 
   const escapedText = escapeMarkdownV2(markdownText);
-
   while ((match = regex.exec(escapedText)) !== null) {
     const [
       fullMatch,
@@ -68,7 +66,7 @@ function extractEntities(markdownText: string) {
       });
     }
   }
-
+  console.log("entities: ", entities);
   return entities;
 }
 
