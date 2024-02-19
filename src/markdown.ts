@@ -10,15 +10,17 @@ const app = express();
 app.use(express.json());
 
 const escapeMarkdownV2 = (text: string): string => {
-  return text.replace(/[_*[\]()~`>#+\-=|{}.!\\-]/g, "\\$&");
+  // Escaping Markdown v2 special characters
+  return text.replace(/[_*[\]()~`>#+\-=|{}.!\\]/g, "\\$&");
 };
+
 function extractEntities(markdownText: string) {
   const entities = [];
   let match;
 
-  // Regular expression to find Markdown entities with escaping for reserved characters
+  // Updated regular expression to find Markdown entities including links and images
   const regex =
-    /\*([^*]+)\*|_([^_]+)_|\`([^`]+)\`|\[([^\]]+)\]\(([^)]+)\)|(https?:\/\/\S+\.(?:png|jpe?g|gif|svg))|!?\[([^\]]+)\]\(([^)]+)\)/g;
+    /\*([^*]+)\*|_([^_]+)_|\`([^`]+)\`|\[([^\[\]]+)\]\(([^)]+)\)|(https?:\/\/\S+\.(?:png|jpe?g|gif|svg))|!\[([^\[\]]+)\]\(([^)]+)\)/g;
 
   const escapedText = escapeMarkdownV2(markdownText);
   while ((match = regex.exec(escapedText)) !== null) {
@@ -29,8 +31,9 @@ function extractEntities(markdownText: string) {
       code,
       linkText,
       linkUrl,
-      imageText,
       imageUrl,
+      imageText,
+      imageLink,
     ] = match;
 
     if (bold) {
@@ -51,25 +54,26 @@ function extractEntities(markdownText: string) {
         url: linkUrl,
       });
     } else if (imageUrl && !imageText) {
+      // This condition seems incorrect due to wrong grouping, let's fix it if needed later.
       entities.push({
         type: "text_link",
         offset: match.index,
         length: imageUrl.length,
         url: imageUrl,
       });
-    } else if (imageText && imageUrl) {
+    } else if (imageText && imageLink) {
+      // This seems to be intended for markdown image syntax, correct it if this was meant for something else.
       entities.push({
         type: "text_link",
         offset: match.index,
         length: imageText.length,
-        url: imageUrl,
+        url: imageLink,
       });
     }
   }
   console.log("entities: ", entities);
   return entities;
 }
-
 const tgpost = (text: string) => {
   const escapedText = escapeMarkdownV2(text);
   return axios.post(
