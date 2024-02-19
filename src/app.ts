@@ -100,6 +100,7 @@ app.post("/ci/githubhook2/push", async (req, res) => {
   try {
     if ((req.body.ref as string).includes("stage")) {
       res.status(200).send("Deployment started!");
+      console.log("Deployment started!");
       await tgpost(
         `🚥 *Deployment started* 🚥\n[${req.body.head_commit.id}](${req.body.head_commit.url}) by 👨‍🚀 ${req.body.pusher.name}`
       );
@@ -113,6 +114,7 @@ app.post("/ci/githubhook2/push", async (req, res) => {
       await tgpost(
         `🏁 *Deployment finished* 🏁 \n[${req.body.head_commit.id}](${req.body.head_commit.url}) by 👨‍🚀 ${req.body.pusher.name}`
       );
+      console.log("Deployment finished!");
     } else {
       res.status(200).send(`Branch ${req.body.ref} is not allowed to deploy!`);
       await tgpost(`Branch ${req.body.ref} is not allowed to deploy!`);
