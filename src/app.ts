@@ -88,10 +88,9 @@ const tgpost = (text: string) => {
     `https://api.telegram.org/bot${process.env.TG_BOT_TOKEN}/sendMessage`,
     {
       chat_id: process.env.TG_CHAT_ID,
-      text: escapedText,
+      text,
       parse_mode: "MarkdownV2",
       disable_web_page_preview: true,
-      entities: extractEntities(text),
     }
   );
 };
