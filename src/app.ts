@@ -16,12 +16,8 @@ app.use(express.json({ limit: "8mb" }));
 // Apply middleware to all routes
 app.use(verifySignatureMiddleware);
 
-function escapeExclamationMarks(text: string) {
-  // Escape exclamation marks with a preceding backslash
-  return text.replace(/!/g, "\\$&");
-}
 const escapeMarkdownV2 = (text: string): string => {
-  return text.replace(/[_*[\]()~`>#+\-=|{}.!\\-]/g, "\\$&");
+  return text.replace(/[-.]/g, "\\$&");
 };
 
 function extractEntities(markdownText: string) {
@@ -88,7 +84,7 @@ const tgpost = (text: string) => {
     `https://api.telegram.org/bot${process.env.TG_BOT_TOKEN}/sendMessage`,
     {
       chat_id: process.env.TG_CHAT_ID,
-      text,
+      text: escapedText,
       parse_mode: "MarkdownV2",
       disable_web_page_preview: true,
     }
@@ -119,14 +115,16 @@ app.post("/ci/githubhook2/push", async (req, res) => {
       await tgpost(`Branch ${req.body.ref} is not allowed to deploy!`);
     }
   } catch (e: any) {
-    console.log(`${new Date().toISOString()} Error:`, e.message);
+    console.log(`${new Date().toISOString()} Error catch 1:`, e.message, e);
     try {
       await tgpost(
         `🛑 Deployment  [${req.body.head_commit.id}](${
           req.body.head_commit.url
         }) by 🐒 ${
           req.body.pusher.name
-        } failed 😱😱😱 at ${new Date().toISOString()} \n with error: ${e}`
+        } failed 😱😱😱 at ${new Date().toISOString()} \n with error: ${
+          e.message
+        }`
       );
 
       await tgpost(`👷‍♀️ Trying to rollback: \`git reset --hard HEAD@{1}\``);
@@ -137,9 +135,8 @@ app.post("/ci/githubhook2/push", async (req, res) => {
       });
       console.log("Rollback out:", rollback);
     } catch (e: any) {
-      console.log(`${new Date().toISOString()} Error:`, e.message);
+      console.log(`${new Date().toISOString()} Error catch 2:`, e.message, e);
       await tgpost(`👷‍♀️ Rollback failed with error: ${e.message}`);
-      console.log("Rollback failed with error: ", e);
     }
   }
 });
