@@ -17,7 +17,7 @@ app.use(express.json({ limit: "8mb" }));
 app.use(verifySignatureMiddleware);
 
 const escapeMarkdownV2 = (text: string): string => {
-  return text.replace(/[-.!]/g, "\\$&");
+  return text.replace(/[-.!=]/g, "\\$&");
 };
 
 function extractEntities(markdownText: string) {
