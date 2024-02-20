@@ -3,7 +3,7 @@ import "dotenv/config";
 
 const escapeMarkdownV2 = (text: string): string => {
   // Escaping Markdown v2 special characters
-  return text.replace(/[-.]/g, "\\$&");
+  return text.replace(/[-.!]/g, "\\$&");
 };
 
 const extractEntities = (markdownText: string) => {
@@ -60,5 +60,5 @@ const tgpost = (text: string) => {
 //   `that is a *bold* text and this is an _italic_ text and this is *[a link](https://www.google.com)*`
 // );
 await tgpost(
-  "🛑 Deployment  [52e7fdfec81323cc172295328d3b8a65809279ae](https://github.com/errmakov/myflows2/commit/52e7fdfec81323cc172295328d3b8a65809279ae) by 🐒 errmakov failed 😱😱😱 at 2024-02-19T22:42:39.037Z \\n with error: Error: write ETIMEDOUT"
+  "🛑 Deployment!11  [52e7fdfec81323cc172295328d3b8a65809279ae](https://github.com/errmakov/myflows2/commit/52e7fdfec81323cc172295328d3b8a65809279ae) by 🐒 errmakov failed 😱😱😱 at 2024-02-19T22:42:39.037Z \\n with error: Error: write ETIMEDOUT"
 );
