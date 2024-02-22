@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   apps: [
     {
       name: process.env.APP_NAME,
