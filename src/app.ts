@@ -112,7 +112,6 @@ app.post("/ci/githubhook2/push", async (req, res) => {
       console.log("Deployment finished!");
     } else {
       res.status(200).send(`Branch ${req.body.ref} is not allowed to deploy!`);
-      await tgpost(`Branch ${req.body.ref} is not allowed to deploy!`);
     }
   } catch (e: any) {
     console.log(`${new Date().toISOString()} Error catch 1:`, e.message, e);
