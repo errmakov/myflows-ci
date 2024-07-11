@@ -15,6 +15,8 @@ app.use(express.json({ limit: "8mb" }));
 // Apply middleware to all routes
 //app.use(verifySignatureMiddleware);
 
+app.use(express.urlencoded({ extended: true }));
+
 const escapeMarkdownV2 = (text: string): string => {
   return text.replace(/[-.!=]/g, "\\$&");
 };
