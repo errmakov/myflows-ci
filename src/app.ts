@@ -35,6 +35,7 @@ const tgpost = (text: string) => {
 app.post("/ci/test", async (req, res) => {
   try {
     console.log("Test started!");
+    console.log(req.body);
     res.status(200).send("Test started!");
   } catch (e: any) {
     res.status(500).send("Test failed!");
