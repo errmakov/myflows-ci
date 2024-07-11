@@ -20,64 +20,6 @@ const escapeMarkdownV2 = (text: string): string => {
   return text.replace(/[-.!=]/g, "\\$&");
 };
 
-function extractEntities(markdownText: string) {
-  const entities = [];
-  let match;
-
-  // Regular expression to find Markdown entities with escaping for reserved characters
-  const regex =
-    /\*([^*]+)\*|_([^_]+)_|\`([^`]+)\`|\[([^\]]+)\]\(([^)]+)\)|(https?:\/\/\S+\.(?:png|jpe?g|gif|svg))|!?\[([^\]]+)\]\(([^)]+)\)/g;
-
-  const escapedText = escapeMarkdownV2(markdownText);
-  while ((match = regex.exec(escapedText)) !== null) {
-    const [
-      fullMatch,
-      bold,
-      italic,
-      code,
-      linkText,
-      linkUrl,
-      imageText,
-      imageUrl,
-    ] = match;
-
-    if (bold) {
-      entities.push({ type: "bold", offset: match.index, length: bold.length });
-    } else if (italic) {
-      entities.push({
-        type: "italic",
-        offset: match.index,
-        length: italic.length,
-      });
-    } else if (code) {
-      entities.push({ type: "code", offset: match.index, length: code.length });
-    } else if (linkText && linkUrl) {
-      entities.push({
-        type: "text_link",
-        offset: match.index,
-        length: linkText.length,
-        url: linkUrl,
-      });
-    } else if (imageUrl && !imageText) {
-      entities.push({
-        type: "text_link",
-        offset: match.index,
-        length: imageUrl.length,
-        url: imageUrl,
-      });
-    } else if (imageText && imageUrl) {
-      entities.push({
-        type: "text_link",
-        offset: match.index,
-        length: imageText.length,
-        url: imageUrl,
-      });
-    }
-  }
-
-  return entities;
-}
-
 const tgpost = (text: string) => {
   const escapedText = escapeMarkdownV2(text);
   return axios.post(
@@ -90,6 +32,15 @@ const tgpost = (text: string) => {
     }
   );
 };
+
+app.post("/ci/test", async (req, res) => {
+  try {
+    console.log("Test started!");
+    res.status(200).send("Test started!");
+  } catch (e: any) {
+    res.status(500).send("Test failed!");
+  }
+});
 
 app.post("/ci/githubhook2/push", async (req, res) => {
   try {

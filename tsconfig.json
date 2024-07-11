@@ -3,13 +3,13 @@
     "esModuleInterop": true,
     "declaration": false,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "nodenext",
+    "moduleResolution": "NodeNext",
     "outDir": "./dist/",
     "resolveJsonModule": true,
     "sourceMap": true,
     "strict": true,
     "target": "es2022",
-    "module": "es2022"
+    "module": "NodeNext"
   },
   "include": ["./src/**/*.ts", "./src/**/*.tsx"]
 }
