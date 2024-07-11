@@ -2,7 +2,6 @@ import axios from "axios";
 import { execSync } from "child_process";
 import express from "express";
 import config from "./config/config.js";
-import verifySignatureMiddleware from "./verifySignatureMiddleware.js";
 
 let confKey = (process.env.SETTING || "development") as TConfigKey;
 const cfg = config[confKey];
@@ -14,7 +13,7 @@ const app = express();
 app.use(express.json({ limit: "8mb" }));
 
 // Apply middleware to all routes
-app.use(verifySignatureMiddleware);
+//app.use(verifySignatureMiddleware);
 
 const escapeMarkdownV2 = (text: string): string => {
   return text.replace(/[-.!=]/g, "\\$&");
