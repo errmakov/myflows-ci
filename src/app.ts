@@ -2,6 +2,7 @@ import axios from "axios";
 import { execSync } from "child_process";
 import express from "express";
 import config from "./config/config.js";
+import verifySignatureMiddleware from "./verifySignatureMiddleware.js";
 
 let confKey = (process.env.SETTING || "development") as TConfigKey;
 const cfg = config[confKey];
@@ -12,10 +13,10 @@ const app = express();
 
 app.use(express.json({ limit: "8mb" }));
 
-// Apply middleware to all routes
-//app.use(verifySignatureMiddleware);
+//Apply middleware to all routes
+app.use(verifySignatureMiddleware);
 
-app.use(express.urlencoded({ extended: true }));
+//app.use(express.urlencoded({ extended: true }));
 
 const escapeMarkdownV2 = (text: string): string => {
   return text.replace(/[-.!=]/g, "\\$&");
@@ -33,16 +34,6 @@ const tgpost = (text: string) => {
     }
   );
 };
-
-app.post("/ci/test", async (req, res) => {
-  try {
-    console.log("Test started!");
-    console.log(req.body);
-    res.status(200).send("Test started!");
-  } catch (e: any) {
-    res.status(500).send("Test failed!");
-  }
-});
 
 app.post("/ci/githubhook2/push", async (req, res) => {
   try {
